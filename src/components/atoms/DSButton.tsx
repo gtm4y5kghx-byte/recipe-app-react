@@ -1,7 +1,7 @@
 import { Pressable, Text, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
-import { useThemeColors } from "../../shared/hooks/useThemeColors";
+import { useThemeColors } from "@/shared/hooks/useThemeColors";
 
 type ButtonStyle = "primary" | "secondary" | "tertiary" | "destructive";
 type ButtonSize = "small" | "medium" | "large";
