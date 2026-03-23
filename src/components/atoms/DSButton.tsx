@@ -1,6 +1,7 @@
 import { Pressable, Text, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
+import { useThemeColors } from "../../shared/hooks/useThemeColors";
 
 type ButtonStyle = "primary" | "secondary" | "tertiary" | "destructive";
 type ButtonSize = "small" | "medium" | "large";
@@ -37,11 +38,6 @@ const sizeStyles: Record<ButtonSize, { container: string; text: string }> = {
   },
 };
 
-const gradientColors = {
-  primary: ["rgba(139,51,66,1)", "rgba(139,51,66,0.85)"] as const,
-  destructive: ["rgba(161,68,54,1)", "rgba(161,68,54,0.85)"] as const,
-};
-
 export const DSButton = ({
   title,
   style = "primary",
@@ -51,6 +47,11 @@ export const DSButton = ({
   fullWidth = true,
   disabled = false,
 }: DSButtonProps) => {
+  const themeColors = useThemeColors();
+  const gradientColors = {
+    primary: [themeColors.primary, `${themeColors.primary}D9`] as const,
+    destructive: [themeColors.error, `${themeColors.error}D9`] as const,
+  };
   const hasGradient = style === "primary" || style === "destructive";
   const sizeConfig = sizeStyles[size];
 
@@ -63,7 +64,9 @@ export const DSButton = ({
           name={icon as any}
           size={16}
           color={
-            style === "primary" || style === "destructive" ? "#fff" : undefined
+            style === "primary" || style === "destructive"
+              ? themeColors.white
+              : themeColors.primary
           }
         />
       )}
