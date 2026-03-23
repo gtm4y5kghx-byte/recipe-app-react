@@ -5,8 +5,9 @@ import { Text, View } from 'react-native';
 
 export default function App() {
   return (
-    <View className="flex-1 items-center justify-center bg-white">
-      <Text>Open up App.tsx to start working on your app!</Text>
+    <View className="flex-1 items-center justify-center bg-background">
+      <Text className="text-text-primary text-lg">Recipe App</Text>
+      <Text className="text-text-secondary mt-sm">Theme tokens working</Text>
       <StatusBar style="auto" />
     </View>
   );

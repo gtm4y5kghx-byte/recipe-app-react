@@ -1,3 +1,61 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    /* Core */
+    --color-primary: #8B3342;
+    --color-secondary: #A65160;
+    --color-accent: #B89260;
+
+    /* Backgrounds */
+    --color-background: #F0E9DC;
+    --color-background-light: #F9F6F0;
+    --color-background-dark: #D9CF83;
+
+    /* Text */
+    --color-text-primary: #343632;
+    --color-text-secondary: #6B6362;
+    --color-text-tertiary: #9D9492;
+
+    /* Semantic */
+    --color-success: #6B8E4E;
+    --color-warning: #C97A3A;
+    --color-error: #A14436;
+
+    /* UI Elements */
+    --color-border: #E0DDCC;
+    --color-divider: #BFB0A5;
+    --color-tag-secondary-text: #8B3342;
+    --color-tag-secondary-bg: #E6D1D9;
+  }
+
+  .dark {
+    /* Core */
+    --color-primary: #C75A69;
+    --color-secondary: #DA7389;
+    --color-accent: #D4AF7A;
+
+    /* Backgrounds */
+    --color-background: #1D1C1E;
+    --color-background-light: #3C3B3C;
+    --color-background-dark: #252624;
+
+    /* Text */
+    --color-text-primary: #F5F5F5;
+    --color-text-secondary: #D1D1D1;
+    --color-text-tertiary: #6B6B6B;
+
+    /* Semantic */
+    --color-success: #8FB872;
+    --color-warning: #E59559;
+    --color-error: #D36666;
+
+    /* UI Elements */
+    --color-border: #3C3B3C;
+    --color-divider: #3C3B3C;
+    --color-tag-secondary-text: #F5F5F5;
+    --color-tag-secondary-bg: #994D60;
+  }
+}
