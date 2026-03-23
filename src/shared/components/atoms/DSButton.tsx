@@ -14,7 +14,6 @@ type DSButtonProps = {
   onPress: () => void;
   fullWidth?: boolean;
   disabled?: boolean;
-  accessibilityLabel?: string;
 };
 
 const textStyles: Record<ButtonStyle, string> = {
@@ -47,7 +46,6 @@ export const DSButton = ({
   onPress,
   fullWidth = true,
   disabled = false,
-  accessibilityLabel,
 }: DSButtonProps) => {
   const themeColors = useThemeColors();
   const gradientColors = {
@@ -84,8 +82,6 @@ export const DSButton = ({
     <Pressable
       onPress={onPress}
       disabled={disabled}
-      accessibilityLabel={accessibilityLabel ?? title}
-      accessibilityRole="button"
       className={`${baseStyles} ${borderStyles}`}
     >
       {hasGradient ? (
