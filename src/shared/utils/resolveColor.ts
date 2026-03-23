@@ -7,9 +7,9 @@ export const resolveColor = (
   colorKey: string,
 ): string => {
   const parts = colorKey.split(".");
-  let value: any = themeColors;
+  let value: unknown = themeColors;
   for (const part of parts) {
-    value = value[part];
+    value = (value as Record<string, unknown>)[part];
   }
   return value as string;
 };
