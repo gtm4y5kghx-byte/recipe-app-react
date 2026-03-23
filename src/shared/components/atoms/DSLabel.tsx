@@ -1,4 +1,5 @@
 import { Text } from "react-native";
+import { SemanticColor } from "@/shared/components/atoms/types";
 
 type LabelStyle =
   | "largeTitle"
@@ -36,7 +37,7 @@ type LabelAlignment = "left" | "center" | "right";
 type DSLabelProps = {
   text: string;
   style?: LabelStyle;
-  color?: LabelColor;
+  color?: SemanticColor;
   alignment?: LabelAlignment;
 };
 

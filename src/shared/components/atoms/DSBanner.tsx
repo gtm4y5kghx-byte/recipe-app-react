@@ -2,6 +2,7 @@ import { View, Text, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useThemeColors } from "@/shared/hooks/useThemeColors";
 import { colors } from "@/theme/colors";
+import { resolveColor } from "@/shared/utils/resolveColor";
 
 type BannerStyle = "info" | "warning" | "error" | "success";
 
@@ -51,10 +52,6 @@ export const DSBanner = ({
   const themeColors = useThemeColors();
   const config = bannerStyles[style];
 
-  const resolveColor = (colorKey: ThemeColorKey): string => {
-    return themeColors[colorKey] as string;
-  };
-
   return (
     <View
       className={`flex-row items-center rounded-md px-md py-sm ${config.bg}`}
@@ -62,7 +59,7 @@ export const DSBanner = ({
       <Ionicons
         name={icon as any}
         size={20}
-        color={resolveColor(config.iconColor)}
+        color={resolveColor(themeColors, config.iconColor)}
       />
       <Text className={`flex-1 ml-sm text-body ${config.textColor}`}>
         {message}
