@@ -37,6 +37,11 @@ const sizeStyles: Record<ButtonSize, { container: string; text: string }> = {
   },
 };
 
+const gradientColors = {
+  primary: ["rgba(139,51,66,1)", "rgba(139,51,66,0.85)"] as const,
+  destructive: ["rgba(161,68,54,1)", "rgba(161,68,54,0.85)"] as const,
+};
+
 export const DSButton = ({
   title,
   style = "primary",
@@ -78,11 +83,7 @@ export const DSButton = ({
     >
       {hasGradient ? (
         <LinearGradient
-          colors={
-            style === "primary"
-              ? ["rgba(139,51,66,1)", "rgba(139,51,66,0.85)"]
-              : ["rgba(161,68,54,1)", "rgba(161,68,54,0.85)"]
-          }
+          colors={[...gradientColors[style as "primary" | "destructive"]]}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
         >
