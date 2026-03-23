@@ -19,7 +19,7 @@ module.exports = {
           light: 'var(--color-background-light)',
           dark: 'var(--color-background-dark)',
         },
-        text: {
+        content: {
           primary: 'var(--color-text-primary)',
           secondary: 'var(--color-text-secondary)',
           tertiary: 'var(--color-text-tertiary)',
