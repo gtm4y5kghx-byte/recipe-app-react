@@ -3,8 +3,13 @@ import { View, TextInput, TextInputProps } from "react-native";
 import { DSLabel } from "@/shared/components/atoms/DSLabel";
 import { DSIcon } from "@/shared/components/atoms/DSIcon";
 import { useThemeColors } from "@/shared/hooks/useThemeColors";
-
-type FieldState = "normal" | "error" | "success" | "disabled";
+import {
+  FieldState,
+  fieldBorderStyles,
+  fieldHelperTextColor,
+  fieldIconColor,
+} from "./types";
+import { DSIconButton } from "./DSIconButton";
 
 type DSTextFieldProps = {
   placeholder: string;
@@ -16,30 +21,7 @@ type DSTextFieldProps = {
   state?: FieldState;
   helperText?: string;
   accessibilityLabel?: string;
-};
-
-const borderStyles: Record<FieldState, { default: string; focused: string }> = {
-  normal: { default: "border-border", focused: "border-primary" },
-  error: { default: "border-error", focused: "border-error" },
-  success: { default: "border-success", focused: "border-success" },
-  disabled: { default: "border-border", focused: "border-border" },
-};
-
-const helperTextColor: Record<
-  FieldState,
-  "secondary" | "error" | "success" | "tertiary"
-> = {
-  normal: "secondary",
-  error: "error",
-  success: "success",
-  disabled: "tertiary",
-};
-
-const iconColor: Record<FieldState, { default: string; focused: string }> = {
-  normal: { default: "secondary", focused: "brand" },
-  error: { default: "error", focused: "error" },
-  success: { default: "success", focused: "success" },
-  disabled: { default: "tertiary", focused: "tertiary" },
+  secure?: boolean;
 };
 
 export const DSTextField = ({
@@ -52,17 +34,20 @@ export const DSTextField = ({
   state = "normal",
   helperText,
   accessibilityLabel,
+  secure,
 }: DSTextFieldProps) => {
   const [isFocused, setIsFocused] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   const themeColors = useThemeColors();
 
-  const borders = borderStyles[state];
+  const borders = fieldBorderStyles[state];
   const borderColor = isFocused ? borders.focused : borders.default;
   const borderWidth = isFocused ? "border-2" : "border";
-  const iconState = iconColor[state];
+  const iconState = fieldIconColor[state];
   const currentIconColor = isFocused ? iconState.focused : iconState.default;
 
   const isDisabled = state === "disabled";
+  const resolvedIcon = icon ?? (secure ? "lock-closed-outline" : undefined);
 
   return (
     <View className="w-full">
@@ -71,9 +56,13 @@ export const DSTextField = ({
           ${borderWidth} ${borderColor}
           ${isDisabled ? "bg-background-dark" : "bg-background-light"}`}
       >
-        {icon && (
+        {resolvedIcon && (
           <View className="mr-sm">
-            <DSIcon name={icon} size="medium" color={currentIconColor as any} />
+            <DSIcon
+              name={resolvedIcon}
+              size="medium"
+              color={currentIconColor as any}
+            />
           </View>
         )}
         <TextInput
@@ -81,21 +70,31 @@ export const DSTextField = ({
           onChangeText={onChangeText}
           placeholder={placeholder}
           placeholderTextColor={themeColors.text.tertiary}
+          secureTextEntry={secure && !isVisible}
           keyboardType={keyboardType}
-          autoCapitalize={autoCapitalize}
+          autoCapitalize={secure ? "none" : autoCapitalize}
           editable={!isDisabled}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
           accessibilityLabel={accessibilityLabel ?? placeholder}
           className="flex-1 text-body text-content-primary"
         />
+        {secure && (
+          <DSIconButton
+            icon={isVisible ? "eye-off-outline" : "eye-outline"}
+            size="small"
+            color="tertiary"
+            accessibilityLabel={isVisible ? "Hide password" : "Show password"}
+            onPress={() => setIsVisible(!isVisible)}
+          />
+        )}
       </View>
       {helperText && (
         <View className="mt-xs px-xs">
           <DSLabel
             text={helperText}
             style="caption1"
-            color={helperTextColor[state]}
+            color={fieldHelperTextColor[state]}
           />
         </View>
       )}
