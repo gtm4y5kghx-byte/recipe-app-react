@@ -9,16 +9,31 @@ type DSPageIndicatorProps = {
   currentPage: number;
 };
 
+const DOT_SIZE = 8;
+const ACTIVE_SCALE = 1.2;
+const INACTIVE_SCALE = 1;
+const ACTIVE_OPACITY = 1;
+const INACTIVE_OPACITY = 0.3;
+const ANIMATION_DURATION = 200;
+
 const Dot = ({ active }: { active: boolean }) => {
   const animatedStyle = useAnimatedStyle(() => ({
-    opacity: withTiming(active ? 1 : 0.3, { duration: 200 }),
-    transform: [{ scale: withTiming(active ? 1.2 : 1, { duration: 200 }) }],
+    opacity: withTiming(active ? ACTIVE_OPACITY : INACTIVE_OPACITY, {
+      duration: ANIMATION_DURATION,
+    }),
+    transform: [
+      {
+        scale: withTiming(active ? ACTIVE_SCALE : INACTIVE_SCALE, {
+          duration: ANIMATION_DURATION,
+        }),
+      },
+    ],
   }));
 
   return (
     <Animated.View
-      style={animatedStyle}
-      className={`h-[8px] w-[8px] rounded-full ${active ? "bg-primary" : "bg-border"}`}
+      style={[animatedStyle, { height: DOT_SIZE, width: DOT_SIZE }]}
+      className={`rounded-full ${active ? "bg-primary" : "bg-border"}`}
     />
   );
 };
