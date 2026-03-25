@@ -8,7 +8,7 @@ import {
 } from "@nozbe/watermelondb/decorators";
 import { IngredientModel } from "./IngredientModel";
 import { StepModel } from "./StepModel";
-import { NutritionInfoModel } from "./NutritionalModel";
+import { NutritionInfoModel } from "./NutritionInfoModel";
 import { MealPlanEntryModel } from "./MealPlanEntryModel";
 
 const sanitizeStringArray = (raw: any) => (Array.isArray(raw) ? raw : []);
