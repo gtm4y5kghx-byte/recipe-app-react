@@ -1,14 +1,17 @@
-import './global.css';
+import "./global.css";
 
-import { StatusBar } from 'expo-status-bar';
-import { Text, View } from 'react-native';
+import { NavigationContainer } from "@react-navigation/native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { StatusBar } from "expo-status-bar";
+import { RootNavigator } from "@/navigation/RootNavigator";
 
 export default function App() {
   return (
-    <View className="flex-1 items-center justify-center bg-background">
-      <Text className="text-text-primary text-lg">Recipe App</Text>
-      <Text className="text-text-secondary mt-sm">Theme tokens working</Text>
-      <StatusBar style="auto" />
-    </View>
+    <GestureHandlerRootView className="flex-1">
+      <NavigationContainer>
+        <RootNavigator />
+        <StatusBar style="auto" />
+      </NavigationContainer>
+    </GestureHandlerRootView>
   );
 }
