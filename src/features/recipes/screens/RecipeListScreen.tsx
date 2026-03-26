@@ -1,46 +1,29 @@
-import { useMemo } from "react";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { View, FlatList, TextInput } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRecipes } from "../hooks/useRecipes";
-import { DSRecipeCard } from "@/shared/components/molecules/RecipeCard";
 import { DSEmptyState } from "@/shared/components/molecules/DSEmptyState";
 import { DSDivider } from "@/shared/components/atoms/DSDivider";
 import { DSIcon } from "@/shared/components/atoms/DSIcon";
 import { useThemeColors } from "@/shared/hooks/useThemeColors";
 import { RecipeModel } from "@/shared/models/db/RecipeModel";
-import { useDatabase } from "@nozbe/watermelondb/react";
-import { createRecipeService } from "@/shared/services/createRecipeService";
+
+import { RecipesStackParams } from "@/navigation/types";
+import { ObservableRecipeCard } from "../components/ObservableRecipeCard";
 
 export const RecipeListScreen = () => {
   const { recipes, searchQuery, setSearchQuery } = useRecipes();
   const themeColors = useThemeColors();
-  const database = useDatabase();
-  const service = useMemo(() => createRecipeService(database), [database]);
-
-  const handleFavoriteToggle = (recipe: RecipeModel) => {
-    service.toggleFavorite(recipe);
-  };
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RecipesStackParams>>();
 
   const handlePress = (recipe: RecipeModel) => {
-    // Navigation wired in next step
+    navigation.navigate("RecipeDetail", { id: recipe.id });
   };
 
   const renderItem = ({ item }: { item: RecipeModel }) => (
-    <DSRecipeCard
-      title={item.title}
-      imageURL={item.imageURL}
-      cuisine={item.cuisine}
-      prepTime={item.prepTime ?? undefined}
-      cookTime={item.cookTime ?? undefined}
-      servings={item.servings ?? undefined}
-      tags={item.userTags}
-      action={{
-        type: "favorite",
-        isFavorite: item.isFavorite,
-        onTap: () => handleFavoriteToggle(item),
-      }}
-      onPress={() => handlePress(item)}
-    />
+    <ObservableRecipeCard recipe={item} onPress={handlePress} />
   );
 
   return (
