@@ -1,7 +1,9 @@
 import { faker } from "@faker-js/faker";
-import { recipeService } from "./recipeService";
+import { createRecipeService } from "./createRecipeService";
 import { SourceType } from "@/shared/models";
 import { database } from "@/shared/models/db/database";
+
+const recipeService = createRecipeService(database);
 
 const generateRecipe = () => ({
   title: faker.food.dish(),

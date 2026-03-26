@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { View, FlatList, TextInput } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRecipes } from "../hooks/useRecipes";
@@ -7,14 +8,17 @@ import { DSDivider } from "@/shared/components/atoms/DSDivider";
 import { DSIcon } from "@/shared/components/atoms/DSIcon";
 import { useThemeColors } from "@/shared/hooks/useThemeColors";
 import { RecipeModel } from "@/shared/models/db/RecipeModel";
-import { recipeService } from "@/shared/services/recipeService";
+import { useDatabase } from "@nozbe/watermelondb/react";
+import { createRecipeService } from "@/shared/services/createRecipeService";
 
 export const RecipeListScreen = () => {
   const { recipes, searchQuery, setSearchQuery } = useRecipes();
   const themeColors = useThemeColors();
+  const database = useDatabase();
+  const service = useMemo(() => createRecipeService(database), [database]);
 
   const handleFavoriteToggle = (recipe: RecipeModel) => {
-    recipeService.toggleFavorite(recipe);
+    service.toggleFavorite(recipe);
   };
 
   const handlePress = (recipe: RecipeModel) => {

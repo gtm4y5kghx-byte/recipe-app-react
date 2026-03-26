@@ -1,8 +1,6 @@
-jest.mock("@/shared/models/db/database", () => ({}));
-
 import { Database } from "@nozbe/watermelondb";
 import { createTestDatabase } from "@/shared/test/setupDatabase";
-import { createRecipeService } from "../recipeService";
+import { createRecipeService } from "../createRecipeService";
 import { RecipeModel } from "@/shared/models/db/RecipeModel";
 import { IngredientModel } from "@/shared/models/db/IngredientModel";
 import { StepModel } from "@/shared/models/db/StepModel";
