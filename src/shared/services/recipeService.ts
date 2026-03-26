@@ -1,9 +1,9 @@
-import { database } from "@/shared/models/db/database";
+import { Database } from "@nozbe/watermelondb";
 import { RecipeModel } from "@/shared/models/db/RecipeModel";
 import { IngredientModel } from "@/shared/models/db/IngredientModel";
 import { StepModel } from "@/shared/models/db/StepModel";
 import { NutritionInfoModel } from "@/shared/models/db/NutritionInfoModel";
-import { Q } from "@nozbe/watermelondb";
+import { database as appDatabase } from "@/shared/models/db/database";
 
 type RecipeInput = {
   title: string;
@@ -42,7 +42,7 @@ type RecipeInput = {
   } | null;
 };
 
-export const recipeService = {
+export const createRecipeService = (database: Database) => ({
   async create(input: RecipeInput): Promise<RecipeModel> {
     return database.write(async () => {
       const recipesCollection = database.get<RecipeModel>("recipes");
@@ -143,4 +143,6 @@ export const recipeService = {
       });
     });
   },
-};
+});
+
+export const recipeService = createRecipeService(appDatabase);
