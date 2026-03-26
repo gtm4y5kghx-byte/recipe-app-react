@@ -112,6 +112,7 @@ export const createRecipeService = (database: Database) => ({
       return recipe;
     });
   },
+
   async deleteRecipe(recipe: RecipeModel): Promise<void> {
     await database.write(async () => {
       const ingredients = await recipe.ingredients.fetch();
