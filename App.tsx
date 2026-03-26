@@ -5,7 +5,6 @@ import { DatabaseProvider } from "@nozbe/watermelondb/react";
 import { StatusBar } from "expo-status-bar";
 import { RootNavigator } from "@/navigation/RootNavigator";
 import { database } from "@/shared/models/db/database";
-import { verifyInstallation } from "nativewind";
 
 export default function App() {
   return (
