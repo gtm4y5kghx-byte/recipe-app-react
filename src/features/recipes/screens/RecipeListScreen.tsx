@@ -47,7 +47,7 @@ export const RecipeListScreen = () => {
           title="No Recipes Yet"
           message="Add your first recipe to get started."
           actionTitle="Add Recipe"
-          onAction={() => {}}
+          onAction={() => navigation.navigate("RecipeForm", {})}
         />
       ) : (
         <FlatList

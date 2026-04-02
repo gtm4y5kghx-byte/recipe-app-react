@@ -1,12 +1,15 @@
 import { useState, useMemo, useCallback } from "react";
 import { useDatabase } from "@nozbe/watermelondb/react";
-import { createRecipeService } from "@/shared/services/createRecipeService";
+import {
+  createRecipeService,
+  RecipeInput,
+} from "@/shared/services/createRecipeService";
 import { RecipeModel } from "@/shared/models/db/RecipeModel";
 import { IngredientModel } from "@/shared/models/db/IngredientModel";
 import { StepModel } from "@/shared/models/db/StepModel";
 import { NutritionInfoModel } from "@/shared/models/db/NutritionInfoModel";
 
-type FormFields = {
+export type FormFields = {
   title: string;
   cuisine: string;
   servings: string;
@@ -23,6 +26,26 @@ type ExistingData = {
   nutrition: NutritionInfoModel | null;
 };
 
+type NutritionFields = {
+  calories: string;
+  protein: string;
+  carbohydrates: string;
+  fat: string;
+  fiber: string;
+  sodium: string;
+  sugar: string;
+};
+
+const emptyNutrition: NutritionFields = {
+  calories: "",
+  protein: "",
+  carbohydrates: "",
+  fat: "",
+  fiber: "",
+  sodium: "",
+  sugar: "",
+};
+
 const emptyFields: FormFields = {
   title: "",
   cuisine: "",
@@ -31,6 +54,70 @@ const emptyFields: FormFields = {
   cookTime: "",
   notes: "",
   tagInput: "",
+};
+
+const buildRecipeInput = (
+  fields: FormFields,
+  ingredientFields: string[],
+  instructionFields: string[],
+  nutritionFields: NutritionFields,
+): RecipeInput => {
+  const parseNumber = (value: string): number | null => {
+    const n = parseInt(value, 10);
+    return isNaN(n) ? null : n;
+  };
+
+  const tags = fields.tagInput
+    .split(",")
+    .map((t) => t.trim().toLowerCase())
+    .filter(Boolean);
+
+  const ingredients = ingredientFields
+    .filter((f) => f.trim() !== "")
+    .map((f, i) => ({
+      quantity: "",
+      unit: "",
+      item: f.trim(),
+      preparation: "",
+      section: "",
+      order: i,
+    }));
+
+  const instructions = instructionFields
+    .filter((f) => f.trim() !== "")
+    .map((f, i) => ({
+      order: i,
+      instruction: f.trim(),
+    }));
+
+  const hasNutrition = Object.values(nutritionFields).some(
+    (v) => v.trim() !== "",
+  );
+  const nutrition = hasNutrition
+    ? {
+        calories: parseNumber(nutritionFields.calories),
+        protein: parseNumber(nutritionFields.protein),
+        carbohydrates: parseNumber(nutritionFields.carbohydrates),
+        fat: parseNumber(nutritionFields.fat),
+        fiber: parseNumber(nutritionFields.fiber),
+        sodium: parseNumber(nutritionFields.sodium),
+        sugar: parseNumber(nutritionFields.sugar),
+      }
+    : null;
+
+  return {
+    title: fields.title.trim(),
+    sourceType: "manual",
+    cuisine: fields.cuisine.trim(),
+    servings: parseNumber(fields.servings),
+    prepTime: parseNumber(fields.prepTime),
+    cookTime: parseNumber(fields.cookTime),
+    notes: fields.notes.trim(),
+    userTags: tags,
+    ingredients,
+    instructions,
+    nutrition,
+  };
 };
 
 export const useRecipeForm = (existing?: ExistingData) => {
@@ -62,6 +149,29 @@ export const useRecipeForm = (existing?: ExistingData) => {
     if (!existing?.steps.length) return [""];
     return existing.steps.map((s) => s.instruction);
   });
+
+  const [nutritionFields, setNutritionFields] = useState<NutritionFields>(
+    () => {
+      if (!existing?.nutrition) return emptyNutrition;
+      const n = existing.nutrition;
+      return {
+        calories: n.calories?.toString() ?? "",
+        protein: n.protein?.toString() ?? "",
+        carbohydrates: n.carbohydrates?.toString() ?? "",
+        fat: n.fat?.toString() ?? "",
+        fiber: n.fiber?.toString() ?? "",
+        sodium: n.sodium?.toString() ?? "",
+        sugar: n.sugar?.toString() ?? "",
+      };
+    },
+  );
+
+  const setNutritionField = useCallback(
+    (key: keyof NutritionFields, value: string) => {
+      setNutritionFields((prev) => ({ ...prev, [key]: value }));
+    },
+    [],
+  );
 
   const setField = useCallback((key: keyof FormFields, value: string) => {
     setFields((prev) => ({ ...prev, [key]: value }));
@@ -122,49 +232,16 @@ export const useRecipeForm = (existing?: ExistingData) => {
     );
   }, [fields, ingredientFields, instructionFields, existing]);
 
-  const parseNumber = (value: string): number | null => {
-    const n = parseInt(value, 10);
-    return isNaN(n) ? null : n;
-  };
-
   const save = useCallback(async () => {
     if (!canSave) return;
-
-    const tags = fields.tagInput
-      .split(",")
-      .map((t) => t.trim().toLowerCase())
-      .filter(Boolean);
-
-    const ingredients = ingredientFields
-      .filter((f) => f.trim() !== "")
-      .map((f, i) => ({
-        quantity: "",
-        unit: "",
-        item: f.trim(),
-        preparation: "",
-        section: "",
-        order: i,
-      }));
-
-    const instructions = instructionFields
-      .filter((f) => f.trim() !== "")
-      .map((f, i) => ({
-        order: i,
-        instruction: f.trim(),
-      }));
-
-    await service.create({
-      title: fields.title.trim(),
-      sourceType: "manual",
-      cuisine: fields.cuisine.trim(),
-      servings: parseNumber(fields.servings),
-      prepTime: parseNumber(fields.prepTime),
-      cookTime: parseNumber(fields.cookTime),
-      notes: fields.notes.trim(),
-      userTags: tags,
-      ingredients,
-      instructions,
-    });
+    await service.create(
+      buildRecipeInput(
+        fields,
+        ingredientFields,
+        instructionFields,
+        nutritionFields,
+      ),
+    );
   }, [canSave, fields, ingredientFields, instructionFields, service]);
 
   return {
@@ -178,6 +255,8 @@ export const useRecipeForm = (existing?: ExistingData) => {
     addInstruction,
     removeInstruction,
     updateInstruction,
+    nutritionFields,
+    setNutritionField,
     canSave,
     hasChanges,
     save,
