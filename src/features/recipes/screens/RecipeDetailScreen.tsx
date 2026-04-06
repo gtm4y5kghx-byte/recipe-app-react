@@ -20,6 +20,7 @@ import { RecipeDetailIngredients } from "../components/RecipeDetailIngredients";
 import { RecipeDetailInstructions } from "../components/RecipeDetailInstructions";
 import { RecipeDetailNotes } from "../components/RecipeDetailNotes";
 import { RecipeDetailNutrition } from "../components/RecipeDetailNutrition";
+import { DSToast } from "@/shared/components/molecules/DSToast";
 
 type RecipeDetailProps = {
   recipe: RecipeModel;
@@ -34,7 +35,7 @@ const RecipeDetail = ({
   steps,
   nutrition,
 }: RecipeDetailProps) => {
-  const { toggleFavorite } = useRecipeActions();
+  const { toggleFavorite, error, clearError } = useRecipeActions();
   const sortedIngredients = ingredients.sort((a, b) => a.order - b.order);
   const sortedSteps = steps.sort((a, b) => a.order - b.order);
   const nutritionInfo = nutrition.length > 0 ? nutrition[0] : null;
@@ -60,6 +61,12 @@ const RecipeDetail = ({
         <RecipeDetailNotes notes={recipe.notes} />
         <RecipeDetailNutrition nutrition={nutritionInfo} />
       </ScrollView>
+      <DSToast
+        message={error?.message ?? ""}
+        style="error"
+        visible={error !== null}
+        onDismiss={clearError}
+      />
     </SafeAreaView>
   );
 };

@@ -14,6 +14,7 @@ import {
   RecipeFormNotes,
   RecipeFormNutrition,
 } from "../components/RecipeForm";
+import { DSToast } from "@/shared/components/molecules/DSToast";
 
 type RouteProps = RouteProp<RecipesStackParams, "RecipeForm">;
 
@@ -34,13 +35,15 @@ export const RecipeFormScreen = () => {
     updateInstruction,
     nutritionFields,
     setNutritionField,
+    error,
+    clearError,
     canSave,
     save,
   } = useRecipeForm();
 
   const handleSave = async () => {
-    await save();
-    navigation.goBack();
+    const success = await save();
+    if (success) navigation.goBack()
   };
 
   return (
@@ -95,6 +98,12 @@ export const RecipeFormScreen = () => {
           setField={setNutritionField}
         />
       </ScrollView>
+      <DSToast
+        message={error?.message ?? ""}
+        style="error"
+        visible={error !== null}
+        onDismiss={clearError}
+      />
     </SafeAreaView>
   );
 };

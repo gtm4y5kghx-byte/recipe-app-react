@@ -236,16 +236,18 @@ export const useRecipeForm = (existing?: ExistingData) => {
     );
   }, [fields, ingredientFields, instructionFields, existing]);
 
-  const save = useCallback(async () => {
-    if (!canSave) return;
+  const save = useCallback(async (): Promise<boolean> => {
+    if (!canSave) return false;
     try {
       await service.create(
         buildRecipeInput(fields, ingredientFields, instructionFields, nutritionFields),
       );
+      return true;
     } catch (e) {
       setError(toAppError(e));
+      return false;
     }
-  }, [canSave, fields, ingredientFields, instructionFields, service]);
+  }, [canSave, fields, ingredientFields, nutritionFields, instructionFields, service]);
 
   return {
     fields,

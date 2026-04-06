@@ -34,15 +34,18 @@ export const useRecipeActions = () => {
   );
 
   const deleteRecipe = useCallback(
-    async (recipe: RecipeModel) => {
+    async (recipe: RecipeModel): Promise<boolean> => {
       try {
         await service.deleteRecipe(recipe);
+        return true;
       } catch (e) {
         setError(toAppError(e));
+        return false;
       }
     },
     [service],
   );
+
 
   return {
     toggleFavorite,
