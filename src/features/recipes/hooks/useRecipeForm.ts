@@ -8,6 +8,7 @@ import { RecipeModel } from "@/shared/models/db/RecipeModel";
 import { IngredientModel } from "@/shared/models/db/IngredientModel";
 import { StepModel } from "@/shared/models/db/StepModel";
 import { NutritionInfoModel } from "@/shared/models/db/NutritionInfoModel";
+import { AppError, toAppError } from "@/shared/models/errors";
 
 export type FormFields = {
   title: string;
@@ -95,14 +96,14 @@ const buildRecipeInput = (
   );
   const nutrition = hasNutrition
     ? {
-        calories: parseNumber(nutritionFields.calories),
-        protein: parseNumber(nutritionFields.protein),
-        carbohydrates: parseNumber(nutritionFields.carbohydrates),
-        fat: parseNumber(nutritionFields.fat),
-        fiber: parseNumber(nutritionFields.fiber),
-        sodium: parseNumber(nutritionFields.sodium),
-        sugar: parseNumber(nutritionFields.sugar),
-      }
+      calories: parseNumber(nutritionFields.calories),
+      protein: parseNumber(nutritionFields.protein),
+      carbohydrates: parseNumber(nutritionFields.carbohydrates),
+      fat: parseNumber(nutritionFields.fat),
+      fiber: parseNumber(nutritionFields.fiber),
+      sodium: parseNumber(nutritionFields.sodium),
+      sugar: parseNumber(nutritionFields.sugar),
+    }
     : null;
 
   return {
@@ -121,6 +122,9 @@ const buildRecipeInput = (
 };
 
 export const useRecipeForm = (existing?: ExistingData) => {
+  const [error, setError] = useState<AppError | null>(null);
+  const clearError = useCallback(() => setError(null), []);
+
   const database = useDatabase();
   const service = useMemo(() => createRecipeService(database), [database]);
 
@@ -234,14 +238,13 @@ export const useRecipeForm = (existing?: ExistingData) => {
 
   const save = useCallback(async () => {
     if (!canSave) return;
-    await service.create(
-      buildRecipeInput(
-        fields,
-        ingredientFields,
-        instructionFields,
-        nutritionFields,
-      ),
-    );
+    try {
+      await service.create(
+        buildRecipeInput(fields, ingredientFields, instructionFields, nutritionFields),
+      );
+    } catch (e) {
+      setError(toAppError(e));
+    }
   }, [canSave, fields, ingredientFields, instructionFields, service]);
 
   return {
@@ -259,6 +262,8 @@ export const useRecipeForm = (existing?: ExistingData) => {
     setNutritionField,
     canSave,
     hasChanges,
+    error,
+    clearError,
     save,
   };
 };
