@@ -12,7 +12,7 @@ type ErrorFallbackProps = {
 export const ErrorFallback = ({ error, onReset }: ErrorFallbackProps) => {
     return (
         <SafeAreaView className="flex-1">
-            <View className="flex-1 justify-center items-center px-lg gap-md">
+            <View className="flex-1 justify-center items-center gap-sm">
                 <DSIcon name="alert-circle-outline" size="large" color="error" />
                 <DSLabel text="Something went wrong" style="title3" alignment="center" />
                 <DSLabel
@@ -21,7 +21,7 @@ export const ErrorFallback = ({ error, onReset }: ErrorFallbackProps) => {
                     color="secondary"
                     alignment="center"
                 />
-                <DSButton title="Try Again" style="secondary" onPress={onReset} fullWidth={false} />
+                <DSButton size="small" title="Try Again" style="secondary" onPress={onReset} fullWidth={false} />
             </View>
         </SafeAreaView>
     );
