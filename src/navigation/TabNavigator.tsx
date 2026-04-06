@@ -1,12 +1,31 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 import { useThemeColors } from "@/shared/hooks/useThemeColors";
+import { ErrorBoundary } from "@/shared/components/ErrorBoundary";
 import { TabParams } from "./types";
 import { RecipesStackNavigator } from "./RecipesStackNavigator";
 import { MealPlanStackNavigator } from "./MealPlanStackNavigator";
 import { ShoppingListStackNavigator } from "./ShoppingListStackNavigator";
 
 const Tab = createBottomTabNavigator<TabParams>();
+
+const RecipesTabWithBoundary = () => (
+  <ErrorBoundary>
+    <RecipesStackNavigator />
+  </ErrorBoundary>
+);
+
+const MealPlanTabWithBoundary = () => (
+  <ErrorBoundary>
+    <MealPlanStackNavigator />
+  </ErrorBoundary>
+);
+
+const ShoppingListTabWithBoundary = () => (
+  <ErrorBoundary>
+    <ShoppingListStackNavigator />
+  </ErrorBoundary>
+);
 
 export const TabNavigator = () => {
   const themeColors = useThemeColors();
@@ -25,7 +44,7 @@ export const TabNavigator = () => {
     >
       <Tab.Screen
         name="RecipesTab"
-        component={RecipesStackNavigator}
+        component={RecipesTabWithBoundary}
         options={{
           title: "Recipes",
           tabBarIcon: ({ color, size }) => (
@@ -35,7 +54,7 @@ export const TabNavigator = () => {
       />
       <Tab.Screen
         name="MealPlanTab"
-        component={MealPlanStackNavigator}
+        component={MealPlanTabWithBoundary}
         options={{
           title: "Meal Plan",
           tabBarIcon: ({ color, size }) => (
@@ -45,7 +64,7 @@ export const TabNavigator = () => {
       />
       <Tab.Screen
         name="ShoppingListTab"
-        component={ShoppingListStackNavigator}
+        component={ShoppingListTabWithBoundary}
         options={{
           title: "Shopping List",
           tabBarIcon: ({ color, size }) => (
