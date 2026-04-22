@@ -1,13 +1,14 @@
 import { useState, useEffect, useMemo } from "react";
 import { useDatabase } from "@nozbe/watermelondb/react";
 import { RecipeModel } from "@/shared/models/db/RecipeModel";
+import { MenuOption, MenuSection } from "@/shared/models";
 
 export const useRecipes = () => {
   const database = useDatabase();
   const [recipes, setRecipes] = useState<RecipeModel[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
-  const [section, setSection] = useState<string>("all");
+  const [section, setSection] = useState<MenuSection>("all");
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -48,6 +49,46 @@ export const useRecipes = () => {
 
     return filtered;
   }, [recipes, section, debouncedQuery]);
+
+  const filterOptions: MenuOption[] = useMemo(() => [
+    { id: "all", title: "All", icon: "book-outline", count: recipes.length },
+    { id: "recently_added", title: "Recently Added", icon: "time-outline" },
+    {
+      id: "recently_cooked",
+      title: "Recently Cooked",
+      icon: "flame-outline",
+      count: recipes.filter((r) => r.lastMade !== null).length,
+    },
+    {
+      id: "favorites",
+      title: "Favorites",
+      icon: "heart",
+      count: recipes.filter((r) => r.isFavorite).length,
+    },
+    {
+      id: "uncategorized",
+      title: "Uncategorized",
+      icon: "folder-open-outline",
+      count: recipes.filter((r) => r.userTags.length === 0).length,
+    },
+  ], [recipes]);
+
+  const tagOptions: MenuOption[] = useMemo(() => {
+    const tagCounts = new Map<string, number>();
+    for (const recipe of recipes) {
+      for (const tag of recipe.userTags) {
+        tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
+      }
+    }
+    return Array.from(tagCounts.entries())
+      .sort((a, b) => b[1] - a[1])
+      .map(([tag, count]) => ({
+        id: `tag-${tag}`,
+        title: tag,
+        icon: "pricetag-outline",
+        count,
+      }));
+  }, [recipes]);
 
   return {
     recipes: filteredRecipes,

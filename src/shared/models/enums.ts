@@ -10,13 +10,20 @@ export enum MealType {
   Dinner = "dinner",
 }
 
-export enum MenuSection {
-  All = "all",
-  RecentlyAdded = "recently_added",
-  RecentlyCooked = "recently_cooked",
-  Favorites = "favorites",
-  Uncategorized = "uncategorized",
-}
+export type MenuSection =
+  | "all"
+  | "recently_added"
+  | "recently_cooked"
+  | "favorites"
+  | "uncategorized"
+  | { tag: string };
+
+export type MenuOption = {
+  id: string;
+  title: string;
+  icon: string;  // Ionicons name
+  count?: number;
+};
 
 export enum SearchScope {
   All = "all",
